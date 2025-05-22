@@ -475,7 +475,7 @@ export const mcpHandler = initializeMcpApiHandler(
     );
     server.tool(
       "read-monad-docs",
-      "Fetch and read the contents of a specific Monad documentation page. This should be used after the monad-docs tool to fetch the actual data.",
+      "Don't use before Monad docs tool, use Monad docs tool first. Fetch and read the contents of a specific Monad documentation page. This should be used after the monad-docs tool to fetch the actual data.",
       {
         url: z
           .string()
