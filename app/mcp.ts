@@ -424,7 +424,7 @@ export const mcpHandler = initializeMcpApiHandler(
     // });
     server.tool(
       "monad-docs",
-      "Fetch Monad developer documentation. The LLM should use the link and open the page.",
+      "Fetch the index of Monad developer documentation. This tool returns a list of available Monad documentation pages with their URLs. To read the content of a specific page, use the 'read-monad-docs' tool with the provided URL. Always call this tool first to discover available documentation links before attempting to read any documentation page.",
       {},
       async () => {
         try {
