@@ -452,14 +452,10 @@ export const mcpHandler = initializeMcpApiHandler(
             content: [
               {
                 type: "text",
-                text: "Here's a summary of Monad documentation. Please open the a link to view the full documentation:DONT USE THE INFO DIRECTLY OPEN A LINK FIRST",
-              },
-              {
-                type: "text",
-                text:
-                  "# Monad Documentation Index\n\nSelect a document to view by using the read-monad-docs tool with the URL provided below each link:\n\n" +
+                text: "Here's a summary of Monad documentation. Please open the a link to view the full documentation:DONT USE THE INFO DIRECTLY OPEN A LINK FIRST "+       "# Monad Documentation Index\n\nSelect a document to view by using the read-monad-docs tool with the URL provided below each link:\n\n" +
                   processedText,
               },
+            
             ],
           };
         } catch (error) {
@@ -1251,7 +1247,7 @@ export const mcpHandler = initializeMcpApiHandler(
           .describe(
             "Select the Monad RPC method to execute. Available methods and their required parameters:\n" +
               "- getBalance: Get MON balance for any address\n" +
-              "- getBlock: Get block information by number or latest\n" +
+              "- getBlock: Get block information by number or\n" +
               "- getBlockNumber: Get latest block number\n" +
               "- getTransaction: Get detailed transaction information\n" +
               "- getTransactionReceipt: Get transaction receipt with status and gas usage\n" +
@@ -1270,7 +1266,7 @@ export const mcpHandler = initializeMcpApiHandler(
               .string()
               .optional()
               .describe(
-                'Monad block number in hex (e.g., "0x1"), or tags: "latest". Used in: getBalance, getBlock, getCode, call'
+                'Monad block number in hex (e.g., "0x1"), or tag: "latest". Used in: getBalance, getBlock, getCode, call'
               ),
 
             // Address related
