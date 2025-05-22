@@ -452,8 +452,17 @@ export const mcpHandler = initializeMcpApiHandler(
             content: [
               {
                 type: "text",
-                text: "Here's a summary of Monad documentation. Please open the a link to view the full documentation:DONT USE THE INFO DIRECTLY OPEN A LINK FIRST "+       "# Monad Documentation Index\n\nSelect a document to view by using the read-monad-docs tool with the URL provided below each link:\n\n" +
-                  processedText,
+                text: [
+                  "# Monad Documentation Index",
+                  "",
+                  "⚠️ IMPORTANT: This is only an index of available documentation. To read any document:",
+                  "1. Find the document you want from the list below",
+                  "2. Use the 'read-monad-docs' tool with the full URL to read its contents",
+                  "",
+                  "Available Documentation Links:",
+                  "",
+                  processedText
+                ].join("\n")
               },
             
             ],
