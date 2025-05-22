@@ -1021,10 +1021,7 @@ export const mcpHandler = initializeMcpApiHandler(
         functionName: z
           .string()
           .describe("Function name to call (e.g., 'balanceOf')"),
-        args: z
-          .array(z.any())
-          .optional()
-          .describe("Function arguments array (e.g., ['0x...'])"),
+          args: z.array(z.any()).default([]),
       },
       async ({ address, abi, functionName, args }) => {
         const result = await readContract({
