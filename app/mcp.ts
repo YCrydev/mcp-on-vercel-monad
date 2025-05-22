@@ -461,6 +461,7 @@ export const mcpHandler = initializeMcpApiHandler(
                   "",
                   "Available Documentation Links:",
                   "",
+                  " Now use the 'read-monad-docs' tool with the full URL to read its contents",
                   processedText
                 ].join("\n")
               },
