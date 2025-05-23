@@ -1,13 +1,10 @@
 import { z } from "zod";
 import { initializeMcpApiHandler } from "../lib/mcp-api-handler";
-import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   createPublicClient,
-  createWalletClient,
   formatUnits,
   getContract,
   http,
-  parseAbi,
   stringify,
 } from "viem";
 import {
@@ -21,14 +18,12 @@ import {
   keccak256 as toKeccak256,
   pad,
 } from "viem";
-import { c, chainIdToChain } from "./commons/common";
+import { c } from "./commons/common";
 import { fetchFunctionInterface } from "./commons/decoder";
 
 import { ERC20_ABI, monadTestnet } from "./commons/constants";
 import { startHexWith0x } from "./commons/utils";
-import * as fs from "fs";
-import * as path from "path";
-import { privateKeyToAccount } from "viem/accounts";
+
 export const mcpHandler = initializeMcpApiHandler(
   (server) => {
     const publicClient = createPublicClient({
@@ -36,33 +31,7 @@ export const mcpHandler = initializeMcpApiHandler(
       transport: http(),
     });
 
-    // Add more tools, resources, and prompts here
-    // server.tool("echo", { message: z.string() }, async ({ message }) => ({
-    //   content: [{ type: "text", text: `Tool echo: ${message}` }],
-    // }))
-    const logToFile = (message: string, data?: any) => {
-      const timestamp = new Date().toISOString();
-      const logMessage = `${timestamp} - ${message}${
-        data
-          ? "\nData: " +
-            JSON.stringify(
-              data,
-              (key, value) =>
-                typeof value === "bigint" ? value.toString() : value,
-              2
-            )
-          : ""
-      }\n`;
 
-      // Create logs directory if it doesn't exist
-      const logDir = path.join(process.cwd(), "logs");
-      if (!fs.existsSync(logDir)) {
-        fs.mkdirSync(logDir);
-      }
-
-      // Write to log file
-      fs.appendFileSync(path.join(logDir, "mcp-server.log"), logMessage);
-    };
 
     server.tool(
       "get-mon-balance",
@@ -403,25 +372,7 @@ export const mcpHandler = initializeMcpApiHandler(
         }
       }
     );
-    // server.tool("monad-docs", {}, async () => {
-    //   try {
-    //     const response = await fetch("https://docs.monad.xyz/llms-full.txt");
-    //     if (!response.ok) {
-    //       return {
-    //         content: [{ type: "text", text: `Error fetching Monad LLMs full text: ${response.status}` }],
-    //       };
-    //     }
-    //     const text = await response.text();
-    //     return {
-    //       content: [{ type: "text", text: text }],
-    //     };
-    //   } catch (error) {
-    //     console.error("Error fetching Monad LLMs full text:", error);
-    //     return {
-    //       content: [{ type: "text", text: `Error fetching Monad LLMs full text: ${error instanceof Error ? error.message : String(error)}` }],
-    //     };
-    //   }
-    // });
+
     server.tool(
       "monad-docs",
       "Fetch the index of Monad developer documentation. This tool returns a list of available Monad documentation pages with their URLs. To read the content of a specific page, use the 'read-monad-docs' tool with the provided URL. Always call this tool first to discover available documentation links before attempting to read any documentation page.",
@@ -1111,128 +1062,6 @@ args: z.array(z.string()).default([])
         }
       }
     );
-
-
-    //IN BETA
-    // server.tool(
-    //   "writeContract",
-    //   "Write data to a smart contract. Format: { address: '0x...', abi: [...], functionName: 'string', args: [], value: '0' }",
-    //   {
-    //     address: z.string().describe("Contract address (0x...)"),
-    //     abi: z
-    //       .array(
-    //         z.object({
-    //           name: z.string(),
-    //           type: z.string(),
-    //           stateMutability: z.string().optional(),
-    //           inputs: z.array(
-    //             z.object({
-    //               name: z.string(),
-    //               type: z.string(),
-    //             })
-    //           ),
-    //           outputs: z
-    //             .array(
-    //               z.object({
-    //                 name: z.string(),
-    //                 type: z.string(),
-    //               })
-    //             )
-    //             .optional(),
-    //         })
-    //       )
-    //       .describe(
-    //         "Contract ABI array (e.g., [{ name: 'transfer', type: 'function', inputs: [{ name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }] }])"
-    //       ),
-    //     functionName: z
-    //       .string()
-    //       .describe("Function name to call (e.g., 'transfer')"),
-    //     args: z
-    //       .array(z.any())
-    //       .optional()
-    //       .describe(
-    //         "Function arguments array (e.g., ['0x...', '1000000000000000000'])"
-    //       ),
-    //     value: z
-    //       .string()
-    //       .optional()
-    //       .describe(
-    //         "Amount of native token to send with the transaction (in wei)"
-    //       ),
-    //     privateKey: z
-    //       .string()
-    //       .optional()
-    //       .describe("Private key for the account to use for the transaction"),
-    //   },
-
-    //   async (
-    //     { address, abi, functionName, args, value, privateKey },
-    //     context
-    //   ) => {
-    //     try {
-    //       logToFile("Starting writeContract", {
-    //         context,
-    //       });
-
-    //       const account = privateKeyToAccount(privateKey as `0x${string}`);
-    //       // Ensure the account is properly set up
-    //       logToFile("Account initialized", {
-    //         address: account.address,
-    //         privateKey: privateKey,
-    //       });
-    //       if (!account) {
-    //         return {
-    //           content: [
-    //             {
-    //               type: "text",
-    //               text: "Account not initialized. Check PRIVATE_KEY environment variable.",
-    //             },
-    //           ],
-    //         };
-    //       }
-
-    //       // Log the account address for debugging
-    //       console.log(`Using account: ${account.address}`);
-    //       const client = createWalletClient({
-    //         account,
-    //         chain: monadTestnet,
-    //         transport: http(),
-    //       });
-
-    //       const { request } = await publicClient.simulateContract({
-    //         address: address as `0x${string}`,
-    //         abi,
-    //         functionName,
-    //         args,
-    //         value: value ? BigInt(value) : undefined,
-    //         account,
-    //       });
-
-    //       const hash = await client.writeContract(request);
-
-    //       return {
-    //         content: [
-    //           {
-    //             type: "text",
-    //             text: `Transaction sent. Hash: ${hash}`,
-    //           },
-    //         ],
-    //       };
-    //     } catch (error) {
-    //       console.error("Error writing to contract:", error);
-    //       return {
-    //         content: [
-    //           {
-    //             type: "text",
-    //             text: `Failed to write to contract. Error: ${
-    //               error instanceof Error ? error.message : String(error)
-    //             }`,
-    //           },
-    //         ],
-    //       };
-    //     }
-    //   }
-    // );
 
     server.tool(
       "monad-rpc",
